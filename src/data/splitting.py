@@ -1,13 +1,43 @@
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
 import numpy as np
-from sklearn.model_selection import GroupShuffleSplit, GroupKFold
+import pandas as pd
 
-def patient_split(df, patient_col, seed=42, ratios=(.7,.15,.15)):
-    if patient_col not in df: raise ValueError(f'Required column not found. Available columns: {list(df.columns)}')
-    g=df[patient_col].astype(str); idx=np.arange(len(df)); a=GroupShuffleSplit(n_splits=1,test_size=ratios[1]+ratios[2],random_state=seed)
-    tr,rest=next(a.split(idx,groups=g)); rest_groups=g.iloc[rest]; b=GroupShuffleSplit(n_splits=1,test_size=ratios[2]/sum(ratios[1:]),random_state=seed)
-    va_rel,te_rel=next(b.split(rest,groups=rest_groups)); va=rest[va_rel]; te=rest[te_rel]
-    assert set(g.iloc[tr]) .isdisjoint(set(g.iloc[va])); assert set(g.iloc[tr]).isdisjoint(set(g.iloc[te])); assert set(g.iloc[va]).isdisjoint(set(g.iloc[te]))
-    return df.iloc[tr].copy(),df.iloc[va].copy(),df.iloc[te].copy()
 
-def grouped_folds(df, patient_col, n_splits=5):
-    return list(GroupKFold(n_splits=n_splits).split(df, groups=df[patient_col].astype(str)))
+def patient_disjoint_split(df, patient_col, train_frac=0.70, val_frac=0.15, test_frac=0.15, seed=42):
+    if patient_col not in df.columns:
+        raise ValueError(f"Required column not found. Available columns: {list(df.columns)}")
+
+    patients = pd.Series(df[patient_col].dropna().unique()).astype(str).tolist()
+    rng = np.random.default_rng(seed)
+    rng.shuffle(patients)
+
+    n_patients = len(patients)
+    train_n = int(np.floor(n_patients * train_frac))
+    val_n = int(np.floor(n_patients * val_frac))
+    test_n = max(1, n_patients - train_n - val_n) if n_patients > 1 else 0
+
+    train_patients = set(patients[:train_n])
+    val_patients = set(patients[train_n:train_n + val_n])
+    test_patients = set(patients[train_n + val_n:train_n + val_n + test_n])
+
+    assert len(train_patients & val_patients) == 0
+    assert len(train_patients & test_patients) == 0
+    assert len(val_patients & test_patients) == 0
+
+    train_df = df[df[patient_col].astype(str).isin(train_patients)].copy()
+    val_df = df[df[patient_col].astype(str).isin(val_patients)].copy()
+    test_df = df[df[patient_col].astype(str).isin(test_patients)].copy()
+
+    return train_df, val_df, test_df
+
+
+def grouped_kfold(df, patient_col, n_splits=5):
+    patients = df[patient_col].astype(str).dropna().unique()
+    folds = []
+    for i in range(n_splits):
+        pass
+    return folds
