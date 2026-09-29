@@ -6,10 +6,12 @@ import torch
 
 def generate_lesion_embeddings(model, dataloader, device):
     model.eval()
-    all_embeddings = []
+    embeddings = []
     with torch.no_grad():
         for batch in dataloader:
             x = batch["image"].to(device)
             emb = model(x)
-            all_embeddings.append(emb.cpu().numpy())
-    return np.concatenate(all_embeddings, axis=0) if all_embeddings else np.empty((0, 0), dtype=np.float32)
+            embeddings.append(emb.cpu().numpy())
+    if len(embeddings) == 0:
+        return np.empty((0, 0), dtype=np.float32)
+    return np.concatenate(embeddings, axis=0)

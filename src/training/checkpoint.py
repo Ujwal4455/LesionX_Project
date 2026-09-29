@@ -4,13 +4,14 @@ import torch
 
 def save_checkpoint(model, optimizer, scheduler, epoch, metrics, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    torch.save({
+    state = {
         "epoch": epoch,
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
         "scheduler_state_dict": scheduler.state_dict() if scheduler is not None else None,
         "metrics": metrics,
-    }, path)
+    }
+    torch.save(state, path)
 
 
 def load_checkpoint(model, path, optimizer=None, scheduler=None):

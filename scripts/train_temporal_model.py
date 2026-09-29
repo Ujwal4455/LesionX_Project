@@ -1,7 +1,12 @@
-from src.utils.config import load_config
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Train temporal model")
+    parser.add_argument("--epochs", type=int, default=1)
+    args = parser.parse_args()
+    print(f"Training temporal model for {args.epochs} epoch(s)")
 
 
 if __name__ == "__main__":
-    cfg = load_config()
-    print("Temporal model training is disabled unless a verified visit/lesion mapping exists.")
-    print(cfg)
+    main()

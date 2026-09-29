@@ -1,7 +1,12 @@
-from src.utils.config import load_config
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run baseline models")
+    parser.add_argument("--lightgbm", action="store_true")
+    args = parser.parse_args()
+    print("Running baseline models")
 
 
 if __name__ == "__main__":
-    cfg = load_config()
-    print("Running LightGBM baseline")
-    print(cfg)
+    main()

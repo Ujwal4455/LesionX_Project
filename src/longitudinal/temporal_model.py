@@ -1,3 +1,3 @@
 class TemporalModel:
     def __init__(self):
-        pass
+        self.enabled = False

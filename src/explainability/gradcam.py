@@ -11,11 +11,11 @@ class GradCAM:
         self.gradients = None
 
     def _hook(self):
-        def forward_hook(module, input, output):
-            self.activations = output
+        def forward_hook(module, inp, out):
+            self.activations = out
 
-        def backward_hook(module, grad_input, grad_output):
-            self.gradients = grad_output[0]
+        def backward_hook(module, grad_in, grad_out):
+            self.gradients = grad_out[0]
 
         self.target_layer.register_forward_hook(forward_hook)
         self.target_layer.register_full_backward_hook(backward_hook)
@@ -26,7 +26,6 @@ class GradCAM:
         logits = self.model(image_tensor)
         score = logits[:, logits.argmax(dim=1)].sum()
         score.backward()
-
         weights = self.gradients.mean(dim=(2, 3), keepdim=True)
         cam = (weights * self.activations).sum(dim=1, keepdim=True)
         cam = torch.relu(cam)

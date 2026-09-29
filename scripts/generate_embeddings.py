@@ -1,7 +1,12 @@
-from src.utils.config import load_config
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate lesion embeddings")
+    parser.add_argument("--output", type=str, default="data/embeddings")
+    args = parser.parse_args()
+    print(f"Generating embeddings to: {args.output}")
 
 
 if __name__ == "__main__":
-    cfg = load_config()
-    print("Generating lesion embeddings")
-    print(cfg.get("paths", {}).get("embeddings", "data/embeddings"))
+    main()

@@ -4,5 +4,5 @@ class SHAPExplainer:
 
     def explain(self, x):
         if self.model is None:
-            return {"status": "unavailable", "message": "No model provided"}
-        return {"status": "not_run", "message": "SHAP explanation requires a fitted model and dataset context"}
+            return {"status": "unavailable", "message": "Model not provided."}
+        return {"status": "not_run", "message": "SHAP explanation requires a fitted model and dataset context."}

@@ -1,7 +1,12 @@
-from src.utils.config import load_config
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Run inference")
+    parser.add_argument("--image", type=str, default=None)
+    args = parser.parse_args()
+    print("Inference image:", args.image)
 
 
 if __name__ == "__main__":
-    cfg = load_config()
-    print("Inference pipeline placeholder")
-    print(cfg)
+    main()

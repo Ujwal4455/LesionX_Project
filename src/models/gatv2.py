@@ -9,17 +9,18 @@ class GATv2Layer(nn.Module):
         self.attn = nn.Linear(out_dim * 2, 1)
 
     def forward(self, x, adj):
-        features = self.linear(x)
+        projected = self.linear(x)
         outputs = []
         for i in range(x.size(0)):
             neighbors = adj[i].nonzero(as_tuple=False).squeeze(-1)
             if neighbors.numel() == 0:
-                outputs.append(features[i])
+                outputs.append(projected[i])
                 continue
-            pair = torch.cat([features[i].unsqueeze(0).repeat(neighbors.size(0), 1), features[neighbors]], dim=1)
-            scores = self.attn(pair).squeeze(-1)
-            weights = torch.softmax(scores, dim=0)
-            outputs.append((weights.unsqueeze(-1) * features[neighbors]).sum(dim=0))
+            pair = torch.cat([projected[i].unsqueeze(0).repeat(neighbors.size(0), 1), projected[neighbors]], dim=1)
+            logits = self.attn(pair).squeeze(-1)
+            weights = torch.softmax(logits, dim=0)
+            agg = (weights.unsqueeze(-1) * projected[neighbors]).sum(dim=0)
+            outputs.append(agg)
         return torch.stack(outputs)
 
 

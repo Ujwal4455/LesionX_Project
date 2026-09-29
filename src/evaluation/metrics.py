@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
-from sklearn.metrics import average_precision_score, roc_auc_score, f1_score
+from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
 
 def compute_metrics(y_true, y_pred, threshold=0.5):

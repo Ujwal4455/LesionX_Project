@@ -2,18 +2,18 @@ import matplotlib.pyplot as plt
 
 
 def plot_roc_curve(fpr, tpr):
-    plt.figure()
-    plt.plot(fpr, tpr)
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title("ROC Curve")
-    plt.show()
+    fig, ax = plt.subplots()
+    ax.plot(fpr, tpr)
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("ROC Curve")
+    return fig
 
 
 def plot_pr_curve(recall, precision):
-    plt.figure()
-    plt.plot(recall, precision)
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.title("Precision-Recall Curve")
-    plt.show()
+    fig, ax = plt.subplots()
+    ax.plot(recall, precision)
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision-Recall Curve")
+    return fig
